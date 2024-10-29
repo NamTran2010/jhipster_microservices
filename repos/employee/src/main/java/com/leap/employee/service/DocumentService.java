@@ -4,6 +4,8 @@ import com.leap.employee.domain.Document;
 import com.leap.employee.repository.DocumentRepository;
 import com.leap.employee.service.dto.DocumentDTO;
 import com.leap.employee.service.mapper.DocumentMapper;
+
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,14 +55,14 @@ public class DocumentService {
         log.debug("Request to partially update Document : {}", documentDTO);
 
         return documentRepository
-            .findById(documentDTO.getId())
-            .map(existingDocument -> {
-                documentMapper.partialUpdate(existingDocument, documentDTO);
+                .findById(documentDTO.getId())
+                .map(existingDocument -> {
+                    documentMapper.partialUpdate(existingDocument, documentDTO);
 
-                return existingDocument;
-            })
-            .map(documentRepository::save)
-            .map(documentMapper::toDto);
+                    return existingDocument;
+                })
+                .map(documentRepository::save)
+                .map(documentMapper::toDto);
     }
 
     /**
@@ -85,6 +87,11 @@ public class DocumentService {
     public Optional<DocumentDTO> findOne(Long id) {
         log.debug("Request to get Document : {}", id);
         return documentRepository.findById(id).map(documentMapper::toDto);
+    }
+
+    // Lấy danh sách document theo employeeId
+    public List<Document> findByEmployeeId(Long employeeId) {
+        return documentRepository.findByEmployeeId(employeeId);
     }
 
     /**
