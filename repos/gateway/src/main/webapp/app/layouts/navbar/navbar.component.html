@@ -18,6 +18,7 @@
   </a>
   <div class="navbar-collapse collapse" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed" [ngSwitch]="account !== null">
     <ul class="navbar-nav ml-auto">
+      <!-- Home Button -->
       <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
           <span>
@@ -26,7 +27,7 @@
           </span>
         </a>
       </li>
-      <!-- jhipster-needle-add-element-to-menu - JHipster will add new menu items here -->
+      <!-- Entities Button -->
       <li
         *ngSwitchCase="true"
         ngbDropdown
@@ -117,6 +118,7 @@
           <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
         </ul>
       </li>
+      <!-- Adminstration Button -->
       <li
         *jhiHasAnyAuthority="'ROLE_ADMIN'"
         ngbDropdown
@@ -183,6 +185,7 @@
           </li>
         </ul>
       </li>
+      <!-- Language Button -->
       <li ngbDropdown class="nav-item dropdown pointer" display="dynamic" *ngIf="languages && languages.length > 1">
         <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown">
           <span>
@@ -202,6 +205,7 @@
           </li>
         </ul>
       </li>
+      <!-- Account Button -->
       <li
         ngbDropdown
         class="nav-item dropdown pointer"
