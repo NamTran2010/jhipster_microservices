@@ -1,0 +1,71 @@
+entity Employee {
+  name String required,
+  hireDate LocalDate required,
+  endDate LocalDate required,
+  salary BigDecimal required
+}
+
+entity Job {
+  jobName String required,
+  description String,
+}
+
+entity Department {
+  departmentName String required,
+  description String
+}
+
+entity JobHistory {
+  startDate LocalDate required,
+  endDate LocalDate required,
+  salary BigDecimal required
+}
+
+entity Document {
+  documentName String required,
+  description String,
+}
+
+entity DocumentType {
+  documentTypeName String required
+}
+
+
+relationship ManyToOne {
+  Employee{job(jobName)} to Job
+}
+
+relationship ManyToOne {
+  Employee{department(departmentName)} to Department
+}
+
+relationship ManyToOne {
+  Job{department(departmentName)} to Department
+}
+
+relationship ManyToOne {
+  JobHistory{job(jobName)} to Job
+}
+
+relationship ManyToOne {
+  JobHistory{employee(name)} to Employee
+}
+
+relationship ManyToOne {
+  JobHistory{department(departmentName)} to Department
+}
+
+// Document Relationships (không có mối quan hệ trực tiếp với Employee)
+
+relationship ManyToOne {
+  Document{documentType(documentTypeName)} to DocumentType
+}
+
+// One-to-Many relationship between Employee and Document
+relationship ManyToOne {
+  Document{Employee(name)} to Employee
+}
+
+dto * with mapstruct
+service * with serviceClass
+paginate * with pagination
