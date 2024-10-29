@@ -10,6 +10,7 @@ import { ApplicationConfigService } from 'app/core/config/application-config.ser
 import { createRequestOption } from 'app/core/request/request-util';
 import { IEmployee, getEmployeeIdentifier } from '../employee.model';
 import { JobHistory } from '../../job-history/job-history.model';
+import { Document } from '../../document/document.model';
 
 export type EntityResponseType = HttpResponse<IEmployee>;
 export type EntityArrayResponseType = HttpResponse<IEmployee[]>;
@@ -18,11 +19,16 @@ export type EntityArrayResponseType = HttpResponse<IEmployee[]>;
 export class EmployeeService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/employees', 'employee');
   protected jobHistoryUrl = this.applicationConfigService.getEndpointFor('api', 'employee');
+  protected documentUrl = this.applicationConfigService.getEndpointFor('api', 'employee');
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
   public getJobHistoriesForEmployee(employeeId: number): Observable<JobHistory[]> {
     return this.http.get<JobHistory[]>(`${this.jobHistoryUrl}/employee/job-histories/${employeeId}`);
+  }
+
+  public getDocumentsForEmployee(employeeId: number): Observable<Document[]> {
+    return this.http.get<Document[]>(`${this.documentUrl}/employee/documents/${employeeId}`);
   }
 
   create(employee: IEmployee): Observable<EntityResponseType> {

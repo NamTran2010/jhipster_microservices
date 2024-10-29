@@ -8,6 +8,7 @@ import javax.validation.constraints.*;
 import java.util.Set;
 import java.util.HashSet;
 import com.leap.employee.domain.JobHistory;
+import com.leap.employee.domain.Document;
 
 /**
  * A DTO for the {@link com.leap.employee.domain.Employee} entity.
@@ -33,6 +34,8 @@ public class EmployeeDTO implements Serializable {
     private DepartmentDTO department;
 
     private Set<JobHistory> jobHistories = new HashSet<>();
+
+    private Set<Document> documents = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -141,6 +144,11 @@ public class EmployeeDTO implements Serializable {
                 return false;
         } else if (!jobHistories.equals(other.jobHistories))
             return false;
+        if (documents == null) {
+            if (other.documents != null)
+                return false;
+        } else if (!documents.equals(other.documents))
+            return false;
         return true;
     }
 
@@ -156,6 +164,7 @@ public class EmployeeDTO implements Serializable {
         result = prime * result + ((job == null) ? 0 : job.hashCode());
         result = prime * result + ((department == null) ? 0 : department.hashCode());
         result = prime * result + ((jobHistories == null) ? 0 : jobHistories.hashCode());
+        result = prime * result + ((documents == null) ? 0 : documents.hashCode());
         return result;
     }
 
@@ -163,7 +172,8 @@ public class EmployeeDTO implements Serializable {
     public String toString() {
         return "EmployeeDTO [id=" + id + ", name=" + name + ", hireDate=" + hireDate + ", endDate=" + endDate
                 + ", salary=" + salary + ", job="
-                + job + ", department=" + department + ", jobHistories=" + jobHistories + "]";
+                + job + ", department=" + department + ", jobHistories=" + jobHistories + ", documents=" + documents
+                + "]";
     }
 
     public Set<JobHistory> getJobHistories() {
@@ -172,5 +182,13 @@ public class EmployeeDTO implements Serializable {
 
     public void setJobHistories(Set<JobHistory> jobHistories) {
         this.jobHistories = jobHistories;
+    }
+
+    public Set<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(Set<Document> documents) {
+        this.documents = documents;
     }
 }

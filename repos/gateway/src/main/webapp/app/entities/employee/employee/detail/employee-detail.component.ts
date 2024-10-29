@@ -14,6 +14,9 @@ export class EmployeeDetailComponent implements OnInit {
   jobHistories: any[] = [];
   showJobHistory = false;
 
+  documents: any[] = [];
+  showDocument = false;
+
   constructor(protected activatedRoute: ActivatedRoute, private employeeService: EmployeeService) {}
 
   ngOnInit(): void {
@@ -36,6 +39,20 @@ export class EmployeeDetailComponent implements OnInit {
     if (employeeId) {
       this.employeeService.getJobHistoriesForEmployee(employeeId).subscribe(jobHistory => {
         this.jobHistories = jobHistory;
+      });
+    }
+  }
+
+  onClick(): void {
+    this.showDocument = !this.showDocument;
+    if (!this.showDocument) {
+      return;
+    }
+
+    const employeeId = this.employee?.id;
+    if (employeeId) {
+      this.employeeService.getDocumentsForEmployee(employeeId).subscribe(document => {
+        this.documents = document;
       });
     }
   }
