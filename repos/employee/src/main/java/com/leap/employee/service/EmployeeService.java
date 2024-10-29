@@ -1,7 +1,9 @@
 package com.leap.employee.service;
 
 import com.leap.employee.domain.Employee;
+import com.leap.employee.domain.JobHistory;
 import com.leap.employee.repository.EmployeeRepository;
+import com.leap.employee.repository.JobHistoryRepository;
 import com.leap.employee.service.dto.EmployeeDTO;
 import com.leap.employee.service.mapper.EmployeeMapper;
 import java.util.Optional;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDate;
 
 /**
  * Service Implementation for managing {@link Employee}.
@@ -24,10 +27,14 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     private final EmployeeMapper employeeMapper;
+    // Inject JobHistory
+    private final JobHistoryRepository jobHistoryRepository;
 
-    public EmployeeService(EmployeeRepository employeeRepository, EmployeeMapper employeeMapper) {
+    public EmployeeService(EmployeeRepository employeeRepository, EmployeeMapper employeeMapper,
+            JobHistoryRepository jobHistoryRepository) {
         this.employeeRepository = employeeRepository;
         this.employeeMapper = employeeMapper;
+        this.jobHistoryRepository = jobHistoryRepository;
     }
 
     /**
@@ -39,6 +46,34 @@ public class EmployeeService {
     public EmployeeDTO save(EmployeeDTO employeeDTO) {
         log.debug("Request to save Employee : {}", employeeDTO);
         Employee employee = employeeMapper.toEntity(employeeDTO);
+
+        boolean isUpdate = employee.getId() != null;
+        if (isUpdate) {
+            Optional<Employee> existingEmployeeOpt = employeeRepository.findById(employee.getId());
+            if (existingEmployeeOpt.isPresent()) {
+                Employee existingEmployee = existingEmployeeOpt.get();
+
+                if (!existingEmployee.getHireDate().equals(employee.getHireDate()) ||
+                        !existingEmployee.getEndDate().equals(employee.getEndDate()) ||
+                        !existingEmployee.getJob().equals(employee.getJob()) ||
+                        !existingEmployee.getDepartment().equals(employee.getDepartment()) ||
+                        existingEmployee.getSalary().compareTo(employee.getSalary()) != 0) {
+
+                    // Create a new JobHistory
+                    JobHistory jobHistory = new JobHistory();
+                    jobHistory.setStartDate(existingEmployee.getHireDate());
+                    jobHistory.setEndDate(existingEmployee.getEndDate());
+                    jobHistory.setSalary(existingEmployee.getSalary());
+                    jobHistory.setJob(existingEmployee.getJob());
+                    jobHistory.setEmployee(existingEmployee);
+                    jobHistory.setDepartment(existingEmployee.getDepartment());
+
+                    // Save the new JobHistory
+                    jobHistoryRepository.save(jobHistory);
+                }
+            }
+        }
+        // Save the updated Employee entity
         employee = employeeRepository.save(employee);
         return employeeMapper.toDto(employee);
     }
@@ -53,14 +88,34 @@ public class EmployeeService {
         log.debug("Request to partially update Employee : {}", employeeDTO);
 
         return employeeRepository
-            .findById(employeeDTO.getId())
-            .map(existingEmployee -> {
-                employeeMapper.partialUpdate(existingEmployee, employeeDTO);
+                .findById(employeeDTO.getId())
+                .map(existingEmployee -> {
+                    // Create a new JobHistory if change Hiredate,job,department,salary
+                    if ((employeeDTO.getHireDate() != null
+                            && !employeeDTO.getHireDate().equals(existingEmployee.getHireDate())) ||
+                            (employeeDTO.getJob() != null && !employeeDTO.getJob().equals(existingEmployee.getJob())) ||
+                            (employeeDTO.getDepartment() != null
+                                    && !employeeDTO.getDepartment().equals(existingEmployee.getDepartment()))
+                            ||
+                            (employeeDTO.getSalary() != null
+                                    && existingEmployee.getSalary().compareTo(employeeDTO.getSalary()) != 0)) {
+                        // Create a new JobHistory
+                        JobHistory jobHistory = new JobHistory();
+                        jobHistory.setStartDate(existingEmployee.getHireDate());
+                        jobHistory.setEndDate(existingEmployee.getEndDate());
+                        jobHistory.setSalary(existingEmployee.getSalary());
+                        jobHistory.setJob(existingEmployee.getJob());
+                        jobHistory.setEmployee(existingEmployee);
+                        jobHistory.setDepartment(existingEmployee.getDepartment());
 
-                return existingEmployee;
-            })
-            .map(employeeRepository::save)
-            .map(employeeMapper::toDto);
+                        jobHistoryRepository.save(jobHistory);
+                    }
+
+                    employeeMapper.partialUpdate(existingEmployee, employeeDTO);
+                    return existingEmployee;
+                })
+                .map(employeeRepository::save)
+                .map(employeeMapper::toDto);
     }
 
     /**
