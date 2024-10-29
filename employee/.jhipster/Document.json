@@ -1,0 +1,43 @@
+{
+  "name": "Document",
+  "fields": [
+    {
+      "fieldName": "documentName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "documentType",
+      "otherEntityRelationshipName": "document",
+      "relationshipName": "documentType",
+      "otherEntityField": "documentTypeName"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "employee",
+      "otherEntityRelationshipName": "document",
+      "relationshipName": "employee",
+      "otherEntityField": "name"
+    }
+  ],
+  "entityTableName": "document",
+  "dto": "mapstruct",
+  "pagination": "pagination",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "microserviceName": "employee",
+  "clientRootFolder": "employee",
+  "databaseType": "sql",
+  "changelogDate": "20241029022346"
+}
