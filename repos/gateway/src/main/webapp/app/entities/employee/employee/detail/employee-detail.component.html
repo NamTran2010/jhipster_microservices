@@ -92,7 +92,10 @@
           </thead>
           <tbody>
             <tr *ngFor="let document of documents" class="table-row">
-              <td>{{ document.id }}</td>
+              <td>
+                <a (click)="goToDocument(document.id)">{{ document.id }}</a>
+              </td>
+
               <td>{{ document.documentName }}</td>
               <td>{{ document.description }}</td>
               <td>{{ document.documentType?.documentTypeName }}</td>

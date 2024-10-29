@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
+import { Router } from '@angular/router';
 import { IEmployee } from '../employee.model';
 import { EmployeeService } from '../service/employee.service';
 
@@ -17,7 +17,7 @@ export class EmployeeDetailComponent implements OnInit {
   documents: any[] = [];
   showDocument = false;
 
-  constructor(protected activatedRoute: ActivatedRoute, private employeeService: EmployeeService) {}
+  constructor(protected activatedRoute: ActivatedRoute, private employeeService: EmployeeService, private router: Router) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ employee }) => {
@@ -55,5 +55,8 @@ export class EmployeeDetailComponent implements OnInit {
         this.documents = document;
       });
     }
+  }
+  goToDocument(id: number): void {
+    this.router.navigate([`/document/${id}/view`]);
   }
 }
