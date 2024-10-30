@@ -200,7 +200,6 @@ public class DocumentResource {
      */
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-
     @DeleteMapping("/documents/{id}")
     public ResponseEntity<Void> deleteDocument(@PathVariable Long id) {
         log.debug("REST request to delete Document : {}", id);

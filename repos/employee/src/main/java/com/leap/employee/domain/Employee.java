@@ -10,6 +10,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import java.util.Set;
 import java.util.HashSet;
+import com.leap.employee.domain.Document;
 
 /**
  * A Employee.
@@ -52,6 +53,10 @@ public class Employee implements Serializable {
     // Xoá hết jobHistory khi xoá employee
     @OneToMany(mappedBy = "employee", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<JobHistory> jobHistories = new HashSet<>();
+
+    // Xoá hết Document khi xoá employee
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<Document> documents = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
