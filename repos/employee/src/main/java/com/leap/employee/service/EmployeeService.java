@@ -45,9 +45,10 @@ public class EmployeeService {
      */
     public EmployeeDTO save(EmployeeDTO employeeDTO) {
         log.debug("Request to save Employee : {}", employeeDTO);
-        Employee employee = employeeMapper.toEntity(employeeDTO);
+        Employee employee = employeeMapper.toEntity(employeeDTO);// convert employeeDTO to employee by employeeMapping
 
-        boolean isUpdate = employee.getId() != null;
+        boolean isUpdate = employee.getId() != null;// isUpdate = true => update ||
+                                                    // isUpdate = false => create newemployee
         if (isUpdate) {
             Optional<Employee> existingEmployeeOpt = employeeRepository.findById(employee.getId());
             if (existingEmployeeOpt.isPresent()) {
